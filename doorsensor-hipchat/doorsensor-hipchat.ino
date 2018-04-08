@@ -4,7 +4,7 @@
 #define BOTtoken "BotToken" //token of TestBOT
 #define BOTRoomId "BotRoomId"
 #define BOTAuthToken "BotAuthToken"
-#define HIPCHATFingerprint "df91f28cc1dc54a950977b5b84b7a5c3c7c15305"
+#define HIPCHATFingerprint "df 91 f2 8c c1 dc 54 a9 50 97 7b 5b 84 b7 a5 c3 c7 c1 53 05"
 #define HIPCHAT_BASE_URL "https://iweb.hipchat.com"
 // change topic
 // curl -d '{"topic":"LOCKED"}' -H 'Content-Type: application/json' -X PUT https://iweb.hipchat.com/v2/room/4494135/topic?auth_token=NAVff...IoP
@@ -70,6 +70,8 @@ void putMessage(String status){
 	Serial.println(httpCode);
 	http.writeToStream(&Serial);
 	String payload = http.getString();
+	Serial.print("response: ");
+	Serial.println(payload);
 	http.end();
 }
 
