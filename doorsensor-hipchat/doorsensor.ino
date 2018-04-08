@@ -1,4 +1,3 @@
-#include <ESP8266TelegramBOT.h>
 
 //Define DEBUG to get the Output from DEBUG_PRINTLN
 #define DEBUG 1
@@ -7,6 +6,7 @@
 #define BOTname "i-LOO"
 #define BOTusername "iLooZHBot"
 #define BOTchatId "BotChatId"
+#define CHIPCHATFingerprint "df91f28cc1dc54a950977b5b84b7a5c3c7c15305"
 
 //Include Basecamp in this sketch
 #include <Basecamp.hpp>
@@ -15,7 +15,7 @@
 #define BASECAMP_NOMQTT  // disable MQTT *after* including Basecamp.hpp
 
 // create telegram bot - http://t.me/iLooZHBot, https://github.com/Gianbacchio/ESP8266-TelegramBot
-TelegramBOT bot(BOTname, BOTusername);
+//TelegramBOT bot(BOTname, BOTusername);
 String botChatId;
 
 // Create a new Basecamp instance called iot that will start the ap in secure mode and the webserver ui only in setup mode
@@ -58,14 +58,14 @@ void sleepEnable() {
     DEBUG_PRINTLN("Door LOCKED");
     //Transfer the current state of the sensor to the MQTT broker
     // statusPacketIdSub = iot.mqtt.publish(statusTopic.c_str(), 1, true, "open" );
-    bot.sendMessage(botChatId, "Door LOCKED", "");
+    // bot.sendMessage(botChatId, "Door LOCKED", "");
     //Configure the wakeup pin to wake if the door is closed
     esp_sleep_enable_ext0_wakeup((gpio_num_t)SensorPin, 1);
   } else {
     DEBUG_PRINTLN("Door unlocked");
     //Transfer the current state of the sensor to the MQTT broker
     // statusPacketIdSub = iot.mqtt.publish(statusTopic.c_str(), 1, true, "closed" );
-    bot.sendMessage(botChatId, "Door unlocked", "");
+    // bot.sendMessage(botChatId, "Door unlocked", "");
     //Configure the wakeup pin to wake if the door is closed
     esp_sleep_enable_ext0_wakeup((gpio_num_t)SensorPin, 0);
   }
@@ -134,7 +134,7 @@ void setup() {
     String token = iot.configuration.get(BOTtoken);
     botChatId = iot.configuration.get(BOTchatId);
 
-    bot.begin(token);
+    // bot.begin(token);
     sleepEnable();
     esp_deep_sleep_start();
   } else {
