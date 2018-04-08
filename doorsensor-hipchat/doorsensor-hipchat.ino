@@ -1,27 +1,33 @@
-
 //Define DEBUG to get the Output from DEBUG_PRINTLN
 #define DEBUG 1
 
 #define BOTtoken "BotToken" //token of TestBOT
-#define BOTname "i-LOO"
-#define BOTusername "iLooZHBot"
-#define BOTchatId "BotChatId"
-#define CHIPCHATFingerprint "df91f28cc1dc54a950977b5b84b7a5c3c7c15305"
+#define BOTRoomId "BotRoomId"
+#define BOTAuthToken "BotAuthToken"
+#define HIPCHATFingerprint "df91f28cc1dc54a950977b5b84b7a5c3c7c15305"
+#define HIPCHAT_BASE_URL "https://iweb.hipchat.com"
+// change topic
+// curl -d '{"topic":"LOCKED"}' -H 'Content-Type: application/json' -X PUT https://iweb.hipchat.com/v2/room/4494135/topic?auth_token=NAVff...IoP
+
 
 //Include Basecamp in this sketch
 #include <Basecamp.hpp>
 #include <Configuration.hpp>
+#include <HTTPClient.h>
+
 
 #define BASECAMP_NOMQTT  // disable MQTT *after* including Basecamp.hpp
 
 // create telegram bot - http://t.me/iLooZHBot, https://github.com/Gianbacchio/ESP8266-TelegramBot
 //TelegramBOT bot(BOTname, BOTusername);
-String botChatId;
+String botRoomId;
+String botAuthToken;
 
 // Create a new Basecamp instance called iot that will start the ap in secure mode and the webserver ui only in setup mode
 Basecamp iot{Basecamp::SetupModeWifiEncryption::secured, Basecamp::ConfigurationUI::accessPoint};
 // Uncomment the following line and comment to one above to start the ESP with open wifi and always running config ui
 // Basecamp iot;
+HTTPClient http;
 
 //Variables for the sensor and the battery
 static const int ResetPin = 35;
@@ -50,6 +56,22 @@ void resetToFactoryDefaults()
     config.resetExcept({ConfigurationKey::accessPointSecret, });
     config.save();
 }
+void putMessage(String status){
+	String url = String(HIPCHAT_BASE_URL) + String("/v2/room/") + botRoomId + String("/topic?auth_token=") + botAuthToken;
+	Serial.println((String)"URL: " + url);
+	if (!http.begin(url, HIPCHATFingerprint)) {
+		Serial.println("http.begin() failed");
+	}
+	http.addHeader("Content-Type", "application/json");
+	String putMessage = String("{\"topic\":\"") + status + String("\"}");
+	Serial.println(String("http put: ") + putMessage);
+	int httpCode = http.PUT(putMessage);
+	Serial.print("http result:");
+	Serial.println(httpCode);
+	http.writeToStream(&Serial);
+	String payload = http.getString();
+	http.end();
+}
 
 void sleepEnable() {
   DEBUG_PRINTLN(__func__);
@@ -58,14 +80,16 @@ void sleepEnable() {
     DEBUG_PRINTLN("Door LOCKED");
     //Transfer the current state of the sensor to the MQTT broker
     // statusPacketIdSub = iot.mqtt.publish(statusTopic.c_str(), 1, true, "open" );
-    // bot.sendMessage(botChatId, "Door LOCKED", "");
+    // bot.sendMessage(botRoomId, "Door LOCKED", "");
+	putMessage("Door LOCKED");
     //Configure the wakeup pin to wake if the door is closed
     esp_sleep_enable_ext0_wakeup((gpio_num_t)SensorPin, 1);
   } else {
     DEBUG_PRINTLN("Door unlocked");
     //Transfer the current state of the sensor to the MQTT broker
     // statusPacketIdSub = iot.mqtt.publish(statusTopic.c_str(), 1, true, "closed" );
-    // bot.sendMessage(botChatId, "Door unlocked", "");
+    // bot.sendMessage(botRoomId, "Door unlocked", "");
+	putMessage("Door unlocked");
     //Configure the wakeup pin to wake if the door is closed
     esp_sleep_enable_ext0_wakeup((gpio_num_t)SensorPin, 0);
   }
@@ -73,19 +97,20 @@ void sleepEnable() {
 
 void setChatBotInterface() {
   iot.web.addInterfaceElement(
-    BOTtoken,
+    BOTAuthToken,
     "input",
-    "Bot Token",
+    "Auth Token",
     "#configform",
-    BOTtoken
+    BOTAuthToken
   );
   iot.web.addInterfaceElement(
-    BOTchatId,
+    BOTRoomId,
     "input",
-    "Bot Chat ID",
+    "Room ID",
     "#configform",
-    BOTchatId
+    BOTRoomId
   );
+  
 }
 void setup() {
   //configuration of the battery and sensor pins
@@ -131,9 +156,9 @@ void setup() {
     Serial.println("IP address: ");
     IPAddress ip = iot.wifi.getIP();
     Serial.println(ip);
-    String token = iot.configuration.get(BOTtoken);
-    botChatId = iot.configuration.get(BOTchatId);
-
+    botAuthToken = iot.configuration.get(BOTAuthToken);
+    botRoomId = iot.configuration.get(BOTRoomId);
+	
     // bot.begin(token);
     sleepEnable();
     esp_deep_sleep_start();
