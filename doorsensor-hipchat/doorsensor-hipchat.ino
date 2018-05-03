@@ -51,6 +51,7 @@ static const int ResetPin = 35;
 static const int SensorPin = 32;
 static const int BatteryPin = 34;
 int sensorValue = 0;
+int batteryValue = 0;
 //The batteryLimit defines the point at which the battery is considered empty.
 int batteryLimit = 3300;
 
@@ -97,12 +98,12 @@ void sleepEnable() {
 
   if (sensorValue == 0) {
     DEBUG_PRINTLN("Door LOCKED");
-	putMessage("Door LOCKED");
+	  putMessage(String("Door LOCKED") + batteryStatusAsString());
     //Configure the wakeup pin to wake if the door is closed
     esp_sleep_enable_ext0_wakeup((gpio_num_t)SensorPin, 1);
   } else {
     DEBUG_PRINTLN("Door unlocked");
-	putMessage("Door unlocked");
+	  putMessage(String("Door unlocked") + batteryStatusAsString());
     //Configure the wakeup pin to wake if the door is closed
     esp_sleep_enable_ext0_wakeup((gpio_num_t)SensorPin, 0);
   }
@@ -134,6 +135,8 @@ void setup() {
 
   //read the status of the doorsensor as soon as possible to determine the state that triggered it
   sensorValue = digitalRead(SensorPin);
+  //Read the current analog battery value
+  batteryValue = analogRead(BatteryPin);
 
   bool resetPressed = (digitalRead(ResetPin) == HIGH);
   if (resetPressed) {
@@ -164,6 +167,7 @@ void setup() {
     botRoomId = iot.configuration.get(BOTRoomId);
 	
     // bot.begin(token);
+    printBatteryStatus();
     sleepEnable();
     esp_deep_sleep_start();
   } else {
@@ -171,6 +175,24 @@ void setup() {
   }
 }
 
+String batteryStatusAsString() {
+  if (batteryValue > 0 && batteryValue < batteryLimit) {
+    //sensorC stores the battery value as a char
+    char sensorC[6];
+    //convert the sensor value to a string
+    sprintf(sensorC, "%04i", batteryValue);
+    return String(" - battery weak (") + String(sensorC) + String(")");
+  }
+  return String("");
+}
+
+void printBatteryStatus() {
+  //sensorC stores the battery value as a char
+  char sensorC[6];
+  //convert the sensor value to a string
+  sprintf(sensorC, "%04i", batteryValue);
+  Serial.println(String("Battery value: ") + String(sensorC));
+}
 void loop()
 {
 }
