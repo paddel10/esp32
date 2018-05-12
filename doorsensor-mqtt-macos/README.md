@@ -5,6 +5,8 @@ ESP32 with a sensor. Status is transmitted to a MQTT broker whenever the door is
 
 # MacOS
 - Background tasks in OS X: [Creating Launch Daemons and Agents](https://developer.apple.com/library/content/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingLaunchdJobs.html#//apple_ref/doc/uid/10000172i-SW7-BCIEDDBJ)
+- Example [launchd.info](http://www.launchd.info/)
+- launchd plist example files: /System/Library/LaunchDaemons
 
 ## MQTT Client - Python
 Simple MQTT client connecting to a MQTT broker awaiting status messages and changing an icon in the menu bar.
