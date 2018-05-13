@@ -4,9 +4,11 @@ ESP32 transmits status of a doorsensor to a MQTT broker. MQTT client on MacOS su
 ESP32 with a sensor. Status is transmitted to a MQTT broker whenever the door is locked or unlocked. Code taken from https://github.com/merlinschumacher/Basecamp/blob/master/examples/doorsensor/doorsensor.ino).
 
 # MacOS
+## Installation
 - Background tasks in OS X: [Creating Launch Daemons and Agents](https://developer.apple.com/library/content/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingLaunchdJobs.html#//apple_ref/doc/uid/10000172i-SW7-BCIEDDBJ)
 - Example [launchd.info](http://www.launchd.info/)
 - launchd plist example files: /System/Library/LaunchDaemons
+- [Distributing your application](https://developer.apple.com/library/content/documentation/Porting/Conceptual/PortingUnix/distributing/distibuting.html)
 
 ## MQTT Client - Python
 Simple MQTT client connecting to a MQTT broker awaiting status messages and changing an icon in the menu bar.
