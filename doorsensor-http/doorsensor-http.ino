@@ -35,13 +35,14 @@ void resetToFactoryDefaults() {
 }
 
 void putMessage() {
-    Serial.println((String)"URL: " + baseUrl);
-    if (!http.begin(baseUrl)) {
+    String url = baseUrl + String("/?status=") + String(sensorValue) + String("&battery=") + String(batteryValue);
+    Serial.println((String)"URL: " + url);
+    if (!http.begin(url)) {
         Serial.println("http.begin() failed");
     }
     // http.addHeader("Content-Type", "application/json");
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-    int httpCode = http.PUT(String("/?status=") + String(sensorValue) + String("&battery=") + String(batteryValue));
+    int httpCode = http.GET();
     Serial.print("http result:");
     Serial.println(httpCode);
     http.writeToStream(&Serial);
