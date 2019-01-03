@@ -8,10 +8,11 @@
 #include <Basecamp.hpp>
 #include <Configuration.hpp>
 #include <HTTPClient.h>
+const short int LED_BUILTIN = 5;
 
 #define BASECAMP_NOMQTT  // disable MQTT *after* including Basecamp.hpp
 
-// configuration variables - format: http://127.0.0.1/
+// configuration variables - format: http://127.0.0.1
 String baseUrl;
 
 // Create a new Basecamp instance called iot that will start the ap in secure mode and the webserver ui only in setup mode
@@ -54,7 +55,7 @@ void putMessage() {
 
 void sleepEnable() {
     DEBUG_PRINTLN(__func__);
-
+    
     if (sensorValue == 0) {
         DEBUG_PRINTLN("Door LOCKED");
         putMessage();
@@ -83,6 +84,7 @@ void setup() {
     pinMode(ResetPin, INPUT_PULLDOWN);
     pinMode(SensorPin, INPUT_PULLDOWN);
     pinMode(BatteryPin, INPUT);
+    pinMode(LED_BUILTIN, OUTPUT);
 
     //read the status of the doorsensor as soon as possible to determine the state that triggered it
     sensorValue = digitalRead(SensorPin);
@@ -105,10 +107,14 @@ void setup() {
 
     if (iot.wifi.getOperationMode() == WifiControl::Mode::client) {
         DEBUG_PRINTLN("in client mode");
+        bool toggleLed = HIGH;
         while (iot.wifi.status() != WL_CONNECTED) {
+            digitalWrite(LED_BUILTIN, toggleLed);
+            toggleLed = !toggleLed;
             delay(500);
             Serial.print(".");
         }
+        
         Serial.println("");
         Serial.println("WiFi connected");
         Serial.println("IP address: ");
