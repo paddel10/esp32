@@ -15,4 +15,30 @@ Simple MQTT client connecting to a MQTT broker awaiting status messages and chan
 
 ## Notification in the menu bar (red dot)
 - [tonsky/AnyBar](https://github.com/tonsky/AnyBar)
-- Python client: https://github.com/philipbl/pyAnyBar
+- [philipbl/pyAnyBar](https://github.com/philipbl/pyAnyBar) (Python client)
+
+# Installation - MacOS
+- Download and install [Python 2.7](https://www.python.org/downloads/)
+- Install [PIP](https://bootstrap.pypa.io/get-pip.py): `python get-pip.py`
+- Install [Paho MQTT-library]([https://www.eclipse.org/paho/]): `pip install paho-mqtt`
+- Install [tonsky/AnyBar](https://github.com/tonsky/AnyBar/releases/download/0.1.4/AnyBar-0.1.4.zip): `AnyBar-0.1.4.zip`
+  - Start AnyBar during startup (System Preferences - Accounts or the User & Groups)
+
+  ![AnyBar][logo]
+  [logo]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "AnyBar"
+- Install [philipbl/pyAnyBar](https://github.com/philipbl/pyAnyBar): `sudo pip install pyanybar`
+- Install python module requests: `sudo pip install requests`
+
+sudo pip uninstall pip
+sudo python -m ensurepip
+
+
+
+launchctl load ~/Library/LaunchAgents/ch.i-loo.status.plist
+
+# Installation
+- https://github.com/tonsky/AnyBar/releases/download/0.1.4/AnyBar-0.1.4.zip
+- sudo pip install pyanybar
+- sudo pip install requests
+
+https://stackoverflow.com/questions/29338066/mac-osx-execute-a-python-script-at-startup

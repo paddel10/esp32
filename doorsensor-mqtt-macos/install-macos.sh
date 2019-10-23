@@ -51,4 +51,4 @@ echo "Installing philipbl/pyAnyBar"
 #- Install [Paho MQTT-library]([https://www.eclipse.org/paho/]): `pip install paho-mqtt`
 #- Install [Cask](http://caskroom.io/): `brew tap caskroom/cask`
 #- Install [tonsky/AnyBar](https://github.com/tonsky/AnyBar): `brew cask install anybar`
-#- Install [philipbl/pyAnyBar](https://github.com/philipbl/pyAnyBar): `pip install pyanybar`
+#- Install [philipbl/pyAnyBar](https://github.com/philipbl/pyAnyBar): `sudo pip install pyanybar`
